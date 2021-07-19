@@ -1,0 +1,52 @@
+<html>
+<head>
+<script type="text/javascript">
+
+function pass()
+  {
+  var str=document.getElementById("text1").value;
+  var count=str.length;
+     var str2="";
+  for (var i=count-1;i>=0;i--){
+	  var j=str.charCodeAt(i);
+	  	  str2=j+str2;
+  }
+  //str2=key2+str2;
+  document.getElementById("showtext").innerHTML=str2;
+  }
+  
+function chick()
+  {
+  var str=document.getElementById("text2").value;
+  var count=str.length;
+  var key1=str.charAt(0);
+  var key2=str.charAt(count-1);
+  str=str.substring(1,count-1);
+  var str2="";
+  for (var i=0;i<str.length;i++){
+  	 var j=str.charCodeAt(i);
+  	 j=j.valueOf()-key1-key2;
+  	 str2=str2+String.fromCharCode(j);
+  }
+  document.getElementById("showtext").innerHTML=str2;
+  }
+</script>
+</head>
+<body>
+
+<form>
+
+<input type="text" id="text1" value="name" name="name" />&nbsp;
+
+<input type="button" id="button1" onclick="pass()" value="send" /></form>
+<form method="post">
+
+<input type="text" id="text2" value="cord" name="c" /><input type="button" id="button2" onclick="chick()" value="retune" /></form>
+<form>
+
+
+<h1 id="showtext">output</h1>
+
+</form>
+</body>
+</html>
