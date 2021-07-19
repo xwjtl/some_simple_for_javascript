@@ -1,0 +1,94 @@
+<html>
+<head>
+<script type="text/javascript">
+var data1=new Array(7);//元データの配列
+
+var all=5;//人数
+function load(){
+
+   //tableを作る、データはランダム
+   var table1=document.getElementById("table1");
+   for (var j=1;j<=all;j++){
+   var tr = document.createElement("tr");
+		for (var k=1;k<=8;k++){
+			var td = document.createElement("td");
+			var text = document.createElement("INPUT");
+			text.setAttribute("type", "text");
+			text.id="input"+j+k
+			text.size=10;
+			if(k==1){
+				text.value="name"+j;
+			}else if(k==2){
+				var year =1950+Math.random()*60;
+				year=Math.floor(year).toString();
+				var month=Math.random()*9;
+				month="0"+Math.floor(month).toString();
+				var day=10+Math.random()*25;
+				day=Math.floor(day).toString();
+				text.value=year+month+day;
+			}else{
+				var s=Math.random()*100
+				text.value=Math.floor(s);
+
+			}
+			td.appendChild(text);
+			tr.appendChild(td);
+		}
+   table1.appendChild(tr);
+   }
+   
+   //データを二次元配列に入れる
+    for (var j=1;j<=all;j++){
+    data1[j-1]=new Array(all-1);
+		for (var k=1;k<=8;k++){
+			var tid="input"+j+k;
+			data1[j-1][k-1]=document.getElementById(tid).value;
+		}
+	}
+}
+
+</script>
+</head>
+<body onload="load()" >
+
+<table id="table1" border="1">
+<tr>
+    <td>名前</td>
+    <td>誕生日</td>
+    <td>科目１</td>
+    <td>科目２</td>
+	<td>科目３</td>
+	<td>科目４</td>
+	<td>科目５</td>
+	<td>科目６</td>
+</tr>
+</table>
+<input name="Button2" type="button" value="合計点数計算" />
+<input name="Button1" type="button" value="合計点数で並ぶ" />
+<input name="Button3" type="button" value="誕生日で並ぶ" />&nbsp;
+<div id="outputdiv" style="visibility:hidden" >
+	<table id="table2" border="1">
+		<tr id="outputtr" >
+		    <td>名前</td>
+		    <td>誕生日</td>
+		    <td>科目１</td>
+		    <td>科目２</td>
+			<td>科目３</td>
+			<td>科目４</td>
+			<td>科目５</td>
+			<td>科目６</td>
+		</tr>
+	
+	
+	</table>
+</div>
+
+
+<script type="text/javascript">
+   
+   
+   
+</script>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+﻿<html >
+
+<head>
+<meta content="ja" http-equiv="Content-Language">
+</head>
+
+<body>
+
+<form method="post">
+	<input id="b1" style="width: 124px" type="button" value="start" onclick="chick()"></form>
+
+<form method="post">
+	<label id="Label1">END</label></form>
+
+<div id="d1" style="position: absolute; width: 30px; height: 30px; top: 100px; left: 50px; background-color: #FF0000;">
+</div>
+<script type="text/javascript">
+public var l=600;
+var flag=true;
+function chick(){
+function chick1(){
+}
+  if(flag){
+     flag=false;
+     document.getElementById("Label1").innerHTML = "flag="+flag;
+
+     move();
+  }
+}
+
+
+function move(){
+  var d1=document.getElementById("d1");
+  var r=Math.ceil (l/6);
+     
+  d1.style.left=r;
+  
+  l=l-r;
+       if (l<=0){
+    flag=true;
+    document.getElementById("Label1").innerHTML = "flag="+flag;
+    l=300;
+  } else {
+  
+    setTimeout("move()",100);
+  }
+  
+}
+
+</script>
+</body>
+
+</html>

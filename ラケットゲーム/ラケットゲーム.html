@@ -1,0 +1,752 @@
+﻿<html>
+<head>
+<div id="home">
+<img src="anime1.png" alt="anime15.png" width=816 height=606 name="shell" id="shell" style="border-color:red" onclick="START()">
+</div>
+<script type="text/javascript">
+    var sw=0,i,v=200;
+    var a=new Array("anime1.png","anime2.png","anime3.png","anime4.png","anime5.png","anime6.png","anime7.png","anime8.png","anime9.png","anime10.png","anime11.png","anime12.png","anime13.png","anime14.png","anime15.png","anime16.png");
+
+function home(){
+   		
+TimeoutID=setTimeout("home()",v);
+     		
+     		//document.getElementById("game").style.visibility = "hidden";
+     		
+     		document.shell.src=a[sw];
+      		document.getElementById("shell").style.boderColor="brack"
+      		sw=sw+1;
+      		
+      	if (sw>=a.length){
+      	clearTimeout(TimeoutID);
+      	sw=0;
+      	}
+}
+/*------------------------------------------------simura-------------------------------------------------*/
+
+/*-----------------------------------------------↓ボールと速度、各種表示非表示↓-----------------------------------------------*/
+    var Bx=100,By=200,Dx=2,Dy=2;  // ボール位置と移動量
+    var Rx=200,Ry=400;              // ラケットの位置
+   var Point=0,BallN=5,TimeID;     // 得点、ボール残数、タイムID
+    var M=new Array(4);             // ブロック情報配列
+    var Level=5;
+   var c=3;//カウントダウン
+	var stage=0;
+    function move()
+    {
+        var i,j,n;
+        TimeID=setTimeout("move()",Level);
+        var ball=document.getElementById("ball");
+        By+=Dy;Bx+=Dx;
+        ball.style.top=By;ball.style.left=Bx;
+        if (Bx<=50 || Bx+10>=450)
+            Dx=-Dx;
+        if (By<=50 || (Rx-10<=Bx && Bx<=Rx+50 && By+10==Ry))
+            Dy=-Dy;
+        if (Dy<0)
+            i=parseInt((By-100)/20);  // ボール位置から、ブロックの位置を計算する
+        else
+            i=parseInt((By-90)/20); 
+        j=parseInt((Bx-100)/50);
+        if (100<=Bx && 90<=By && 0<=i && i<=3 && 0<=j && j<=5 && M[i][j]==1)
+        	{  // ブロックがあれば
+            n=i*6+j;      // ブロックのIDを求める
+            document.getElementById("block"+n).style.visibility="hidden";  // 非表示にする
+            M[i][j]=0;                      // 配列情報を0にすることで、ブロックなし状態を示す
+            Dy=-Dy;
+            Point+=2400;                        // 得点の加算と表示
+            document.getElementById("PointMsg").value=Point+"点";
+            if (Point%2400==0) {
+                clearTimeout(TimeID);
+                Bx=parseInt(Math.random()*30)*10+50;By=200;
+                Dy=2;
+                /*↓以下追加*/
+				BallN++;
+                document.getElementById("BallMsg").value="残り"+BallN+"個";
+				/*↑ブロック全消しで１うｐ*/				
+                		if (stage!=1)
+                		{
+                			Level-=4//クリアするたびに速度アップ
+                				stage++;
+                			c=3;
+                			countdown();
+                			}
+                			else if(stage==1)
+                			{
+                			clearTimeout(TimeID);
+                			document.getElementById("game").style.visibility="hidden";
+							document.getElementById("Close").style.visibility="visible",5000;
+							document.getElementById("Close").style.visibility="hidden";
+							
+							START();
+							}             		
+            }
+        }
+        if (By>420){
+            BallN--;               // ボールの残数を減らす
+           	document.getElementById("BallMsg").value="残り"+BallN+"個";
+            clearTimeout(TimeID);  // ボールを停止する
+            if (BallN>0){
+                Bx=parseInt(Math.random()*30)*10+50;By=200;  
+                setTimeout("move()",500);  //１秒後に再開 
+            }
+        }
+	}
+/*-----------------------------------------------↓一　時　停　止↓-----------------------------------------------*/
+	/*document.onkeydown=pause; //SPACE押下でpause呼び出し      
+
+ 		function pause(key)
+ 		{
+			var p;
+		  			if(key.keycode == 32)
+	   				{
+					clearTimeout("move()");
+					p++;
+					
+		   			if(key.keycode==32 && p==1)
+					{
+					setTimeout("move()");
+					p=0;
+					}
+				}*/
+			
+/*-----------------------------------------------↓ウィンドウとブロックを置く等設定↓-----------------------------------------------*/
+    function racket(event)
+    {
+        var bar=document.getElementById("bar");
+        Rx=event.clientX-25;
+        if (50<=Rx && Rx+50<=450)
+            bar.style.left=Rx;
+    } 
+    function init()
+    {
+        var i,j,n=0,tag="";  
+        var block=document.getElementById("block");
+       
+
+        window.resizeTo(550,700);  // ウィンドウサイズを変更
+        for (i=100;i<=160;i+=20){  //　ブロックの配置
+            for (j=100;j<=350;j+=50){
+                tag+="<img id='block"+n+"' src='blockbar.png' style='position:absolute;left:"+j+";top:"+i+"'>";
+                n++;
+            }
+        }
+        block.innerHTML=tag;
+        for (i=0;i<6;i++){      // 4行6列のブロックの情報を表す2次元配列
+            M[i]=new Array(7);
+            for (j=0;j<6;j++){
+                M[i][j]=1;      // i行j列のブロックがあれば1
+            }
+        } 
+        Bx=parseInt(Math.random()*30)*10+50;By=200;
+        move();
+    }
+  
+
+/*-----------------------------------------------↓スタート(モード画面)と画像↓-----------------------------------------------*/
+function START()//スタートボタン
+			{
+		var start=0;
+	document.getElementById("home").style.visibility = "hidden";//スタート画像：くりっくで非表示
+
+
+		/*各モード画像：初期非表示*/
+	 			document.getElementById("mode").style.visibility = "visible";
+	 			block2.style.visibility ="hidden";
+ 				}
+/*-----------------------------------------------↓カウントダウンヌ↓-----------------------------------------------*/
+ 				
+ 		function countdown(){
+ 			document.getElementById("mode").style.visibility = "hidden";
+			document.getElementById("count").style.visibility="visible";
+ 			document.getElementById("game").style.visibility = "visible";
+ 			//block2.style.visibility ="hidden";
+
+			ID=setTimeout("countdown()",1000);
+			count.innerHTML=c;
+			c--;
+					if(c<0){
+					clearTimeout(ID);
+					document.getElementById("count").style.visibility="hidden";
+					Dx=2; Dy=2;  // ボール位置と移動量
+    				Rx=200;Ry=400;              // ラケットの位置
+					TimeID;     // 得点、ボール残数、タイムID
+ 				    Level=5;
+
+					init();
+				}
+		}
+		
+/*----------------------------------------simura end-------------------------------------------------*/
+
+
+/*------------------------------------------------saito------------------------------------------*/
+	var point1=0,point2=0; //得点
+    var c=3;					//カウントダウン
+    var Rx1=200,Ry=400;              // 青ラケットの位置
+    var Rx2=200,Ry2=80;
+    var skill=0,skill2=0,eff=0,eff2=0,sw1=0; //貫通効果に関する変数
+    var sw2=0,longeff=0,longeff2=0;			//ラケット延長に関する変数
+    var speedeff=0,speedeff2=0,sw3=0;		//速度減少に関する変数
+    var mb=0;
+    
+    var Sta = Math.round(Math.random()*1);
+	if(Sta == 0){Bx=430; By=200; Dy=-Dy;}
+	if(Sta == 1){Bx=60; By=250;}
+
+   
+    var inputKey = new Array(); 		//キー入力を受け付ける操作
+    var inputKey2 = new Array();
+    document.onkeydown = function(e){
+    	//if(!e) e = window.event;
+    	inputKey[e.keyCode] = true;
+    	inputKey2[e.keyCode] = true;
+    	//alert(inputKey[e.keyCode]);
+    	var wh = window.event.keyCode;
+    	if(wh == 65){
+    		//A
+    		longaction2(0);
+    	}
+    	if(wh == 100){
+    		//4
+    		longaction2(1);
+    	}
+		if(wh == 83){
+			//S
+			action2(0);
+		}
+		if(wh == 101){
+			//5
+			action2(1);
+		}
+		if(wh == 68){
+			//D
+			speedaction2(0);
+		}
+		if(wh == 102){
+			//6
+			speedaction2(1);
+		}
+    };
+    document.onkeyup = function(e){
+    	//if(!e) e = window.event;
+    	inputKey[e.keyCode] = false;
+    	inputKey2[e.keyCode] = false;
+    };
+    window.onblur = function(){
+    	inputKey.length = 0;
+    };
+    
+    function KeyDown2(kc){
+    	if(inputKey[kc]) return true;
+    	return false;
+    }
+    function KeyDown22(kc2){
+    	if(inputKey2[kc2]) return true;
+    	return false;
+    }
+
+    setInterval(function (){ //青ラケットを動かす関数（繰り返し処理）
+    		if( KeyDown2(90) ){
+    			//Z
+    			if( KeyDown2(88) ){
+    			//X
+   		 		if(speedeff2==1){
+   		 			Rx1 -= 2;
+   		 		}else{
+    					Rx1 -= 4;
+   		 		}
+    			}
+   		 	if(speedeff2==1){
+   		 		Rx1 -= 2;
+   		 	}else{
+    		    		Rx1 -= 3;
+   		     }
+    		    	if (50<=Rx1 && Rx1+50<=450)
+    		        	bar1.style.left=Rx1;
+		}		    	
+    		if( KeyDown2(67) ){
+    			//C
+    			if( KeyDown2(88) ){
+    			//X
+    			if(speedeff2==1){
+    				Rx1 += 2;
+    			}else{
+    					Rx1 += 4;
+    			}
+    			}
+    		if(speedeff2==1){
+    			Rx1 += 2;
+    			}else{
+     	   		Rx1 += 3;
+    	    }
+     	   	if (50<=Rx1 && Rx1+50<=450)
+     	   	    bar1.style.left=Rx1;
+     	  	}
+    		},1000/60);
+    
+    setInterval(function (){//赤ラケットを動かす関数（繰り返し処理）
+   	 	if( KeyDown22(97) ){
+   	 		//ten1
+   	 		if( KeyDown22(98) ){
+   	 		//ten2
+   		 		if(speedeff == 1){
+   		 			Rx2 -= 2;
+   		 		}else{
+   	 				Rx2 -= 4;
+   		 		}
+   	 		}
+   		 	if(speedeff == 1){
+   		 		Rx2 -=2;
+   	 		}else{
+   	     		Rx2 -= 3;
+   		    }
+   	     	if (50<=Rx2 && Rx2+50<=450)
+   		         	bar2.style.left=Rx2;
+		}    	
+   	 	if( KeyDown22(99) ){
+   	 		//ten3
+   	 		if( KeyDown22(98) ){
+   	 		//te2
+   		 		if(speedeff == 1){
+   		 		Rx2 += 2;
+   	 			}else{
+   	 			Rx2 += 4;
+   		 		}
+   	 		}
+   		 	if(speedeff == 1){
+   	 			Rx2 += 2;
+   	 		}else{
+   		     	Rx2 += 3;
+   		    }
+   	     	if (50<=Rx2 && Rx2+50<=450)
+   	     	    bar2.style.left=Rx2;
+       	}
+	},1000/60);
+       
+	function action2(s){//貫通球の制御
+		if(sw1==0){
+			if(s==0 && skill>=3){
+				skill = skill-3;
+				eff=1;
+				sw1=1;
+				ballb.src = "ballblue.png";
+				if(skill <3){
+					document.getElementById("p1s").style.color = "black";
+				}
+				document.getElementById("p1s").value = skill + "hit";
+				setTimeout("actionend2(0)",3000);
+			}
+			if(s==1 && skill2>=3){
+				skill2 = skill2-3;
+				eff2=1;
+				sw1=1;
+				ballb.src = "ballred.png";
+				if(skill2 <3){
+					document.getElementById("p2s").style.color = "black";
+				}
+				document.getElementById("p2s").value = skill2 + "hit";
+				setTimeout("actionend2(1)",3000);
+			}
+		}
+	}
+	
+	function longaction2(s){//ラケット延長の制御
+		if(sw2==0){
+			if(s==0 && skill>=3){
+				skill = skill-3;
+				longeff=1;
+				bar.src = "barlong.png";
+				if(skill <3){
+					document.getElementById("p1s").style.color = "black";
+				}
+				document.getElementById("p1s").value = skill + "hit";
+				setTimeout("longactionend2(0)",5000);
+			}
+			if(s==1 && skill2>=3){
+				skill2 = skill2-3;
+				longeff2=1;
+				bar2.src = "bar2long.png";
+				if(skill2 <3){
+					document.getElementById("p2s").style.color = "black";
+				}
+				document.getElementById("p2s").value = skill2 + "hit";
+				setTimeout("longactionend2(1)",5000);
+			}
+		}
+	}
+	
+	function speedaction2(s){//相手減速の制御
+		if(sw3==0){
+			if(s==0 && skill>=3){
+				skill = skill-3;
+				speedeff=1;
+				sw3=1;
+				ballb.src = "ballpblue.png";
+				if(skill <3){
+					document.getElementById("p1s").style.color = "black";
+				}
+				document.getElementById("p1s").value = skill + "hit";
+				setTimeout("speedactionend2(0)",4000);
+			}
+			if(s==1 && skill2>=3){
+				skill2 = skill2-3;
+				speedeff2=1;
+				sw3=1;
+				ballb.src = "ballpred.png";
+				if(skill2 <3){
+					document.getElementById("p2s").style.color = "black";
+				}
+				document.getElementById("p2s").value = skill2 + "hit";
+				setTimeout("speedactionend2(1)",4000);
+			}
+		}
+	}
+
+
+	
+	function actionend2(s){//貫通球の終了処理
+		if(s==0){
+			eff=0;
+			sw1=0;
+			ballb.src = "ball.png";
+		}
+		if(s==1){
+			eff2=0;
+			sw1=0;
+			ballb.src = "ball.png";
+		}
+	}
+	
+	function longactionend2(s){//ラケット延長の終了処理
+		if(s==0){
+			longeff=0;
+			bar.src = "bar.png";
+		}
+		if(s==1){
+			longeff2=0;
+			bar2.src = "bar2.png";
+		}
+	}
+	
+	function speedactionend2(s){//相手減速の終了処理
+		if(s==0){
+			speedeff=0;
+			sw3=0;
+			ballb.src = "ball.png";
+		}
+		if(s==1){
+			speedeff2=0;
+			sw3=0;
+			ballb.src = "ball.png";
+		}
+	}
+
+
+
+    function move2()//球を動かす
+    {
+    	
+        var i,j,n;
+        TimeID=setTimeout("move2()",Level);
+        var ballb=document.getElementById("ballb");
+        By+=Dy;Bx+=Dx;
+        ballb.style.top=By;ballb.style.left=Bx;
+        if (Bx<=50 || Bx+10>=450)
+            Dx=-Dx;
+       if(longeff == 1){
+       		if(Rx1-10<=Bx && Bx<=Rx1+100 && By+10==Ry){
+       			Dy=-Dy;
+           		skill++;
+           		if(skill >= 3){
+           			document.getElementById("p1s").style.color = "red";
+           		}
+           		document.getElementById("p1s").value = skill + "hit";
+       		}
+       }
+        else if (Rx1-10<=Bx && Bx<=Rx1+50 && By+10==Ry){
+            Dy=-Dy;
+            skill++;
+            if(skill >= 3){
+           		document.getElementById("p1s").style.color = "red";
+           	}
+            document.getElementById("p1s").value = skill + "hit";
+        }
+       if(longeff2 == 1){
+       		if(Rx2-10<=Bx && Bx<=Rx2+100 && By==Ry2){
+       			Dy=-Dy;
+            	skill2++;
+            	if(skill2 >= 3){
+           			document.getElementById("p2s").style.color = "red";
+           		}
+            	document.getElementById("p2s").value = skill2 + "hit";
+			}
+		}
+        else if (Rx2-10<=Bx && Bx<=Rx2+50 && By==Ry2){
+            Dy=-Dy;
+            skill2++;
+            if(skill2 >= 3){
+           		document.getElementById("p2s").style.color = "red";
+           	}
+            document.getElementById("p2s").value = skill2 + "hit";
+            }
+                        
+        if (Dy<0)
+            i=parseInt((By-220)/20);  // ボール位置から、ブロックの位置を計算する
+        else
+            i=parseInt((By-220)/20); 
+        j=parseInt((Bx-100)/50);
+        if (100<=Bx && 190<=By && 0<=i && i<=3 && 0<=j && j<=5 && M[i][j]==1){  // ブロックがあれば
+            n=i*6+j;      // ブロックのIDを求める
+            document.getElementById("block2"+n).style.visibility="hidden";  // 非表示にする
+            M[i][j]=0;                      // 配列情報を0にすることで、ブロックなし状態を示す
+            if(eff==1 || eff2==1){
+            }else{
+            Dy=-Dy;
+            }
+            
+            
+            Point+=10;                        // 得点の加算と表示
+            document.getElementById("PointMsg").value=Point+"点";
+            if (Point%120==0) {
+                clearTimeout(TimeID);
+                //Bx=parseInt(Math.random()*30)*10+50;By=200;
+                Dy=10;
+                if (Level>=40) Level-=20
+                if(eff==1 || eff2==1){
+                }else{
+                Dy=-Dy
+                }
+                move2();
+            }
+        }
+        
+        if (By<60){
+            BallN--;               // ボールの残数を減らす
+            document.getElementById("BallMsg").value="残り"+BallN+"個";
+            clearTimeout(TimeID);  // ボールを停止する
+			point2++;
+			document.getElementById("p2").value = point2+"点";
+            if (BallN>0){
+                /*Bx=parseInt(Math.random()*30)*10+50;*/Bx=430;By=200; 
+                c=3; 
+                document.getElementById("countb").style.visibility="visible";
+                countdown2();
+            }
+            else　result2();
+        }
+        if (By>430){
+            BallN--;               // ボールの残数を減らす
+            document.getElementById("BallMsg").value="残り"+BallN+"個";
+            clearTimeout(TimeID);  // ボールを停止する
+			  point1++;
+			  document.getElementById("p1").value = point1+"点";
+            if (BallN>0){
+                /*Bx=parseInt(Math.random()*30)*10+50;*/Bx=60;By=250;  
+                c=3;
+                document.getElementById("countb").style.visibility="visible";
+                countdown2();
+            }
+            else result2();
+        }       
+    }
+    /*
+    function racket(event)
+    {
+        var bar=document.getElementById("bar");
+        Rx1=event.clientX-25;
+        if (50<=Rx1 && Rx1+50<=450)
+            bar.style.left=Rx1;
+    }
+    */
+    function init2()
+    {
+		
+    	var bar = document.getElementById("bar");
+    	var bar2 = document.getElementById("bar2");
+        var i,j,n=0,tag="";  
+        
+        var block=document.getElementById("block2");
+        window.resizeTo(550,700);  // ウィンドウサイズを変更
+        for (i=220;i<=240;i+=20){  //　ブロックの配置
+            for (j=100;j<=350;j+=50){
+                tag+="<img id='block2"+n+"' src='blockbar.png' style='position:absolute;left:"+j+";top:"+i+"'>";
+                n++;
+            }
+        }
+        block.innerHTML=tag;
+        for (i=0;i<2;i++){      // 4行6列のブロックの情報を表す2次元配列
+            M[i]=new Array(6);
+            for (j=0;j<6;j++){
+                M[i][j]=1;      // i行j列のブロックがあれば1
+            }
+        } 
+        
+        //Bx=parseInt(Math.random()*30)*10+50;By=200;
+
+        blockID2 = setTimeout("makeB2()",10000);
+        move2();
+    }
+    
+    function makeB2(){
+    	var t,y,m;
+    	
+    	if(mb==0){
+    	t = Math.round(Math.random());
+    	y = Math.round(Math.random()*5);
+    	m=t*6+y;
+    	M[t][y] = 1;
+    	document.getElementById("block2"+m).style.visibility="visible";
+    	blockID = setTimeout("makeB2()",3000);
+    	}
+    }
+    
+    function countdown2(){
+		ID=setTimeout("countdown2()",1000);
+		countb.innerHTML=c;
+		c--;
+		if(c<0){
+		clearTimeout(ID);
+		init2();
+		document.getElementById("countb").style.visibility="hidden";
+		}
+	}
+	
+	function result2(){
+		var R = new String;
+		mb=1;
+		
+		if( point1 < point2 ){
+		R = "Blue win!";
+		result.value = R;
+		document.getElementById("result").style.color ="blue";
+		}
+		else if( point1 > point2 ){
+		R = "Red win!";
+		result.value = R;
+		document.getElementById("result").style.color ="red";
+		}
+		else if( point1 == point2 ){
+		R = "Draw!";
+		result.value = R;
+		document.getElementById("result").style.color ="purple";
+		}
+		document.getElementById("result").style.visibility="visible";
+		result.innerHTML=R;
+		
+		clearTimeout(blockID);
+		clearTimeout(blockID2);
+		
+		setTimeout("endgame2()",3000);
+
+	}
+
+	function startgame2(){
+		Dx=10; Dy=10; Level =100;
+		BallN=3;
+		mb=0;
+		c=3;
+	
+		document.getElementById("mode").style.visibility = "hidden";
+		//block2.style.visibility ="visible";
+		BallMsg.style.visibility ="visible";
+		batUI.style.visibility ="visible";
+		batUI2.style.visibility ="visible";
+		countb.style.visibility="visible";
+		ballb.style.visibility ="visible";
+		block2.style.visibility ="visible";
+		setTimeout("countdown2()",1000);
+
+	}
+
+
+
+	function endgame2(){
+		c=3;
+
+		BallMsg.style.visibility = "hidden";
+		batUI.style.visibility ="hidden";
+		batUI2.style.visibility ="hidden";
+		result.style.visibility ="hidden";
+		block2.style.visibility ="hidden";
+		ballb.style.visibility="hidden";
+		START();
+	}
+
+/*--------------------------------------------------saito end--------------------------------*/
+
+
+onLoad=home();
+
+</SCRIPT>
+</head>
+<body onMouseMove="racket(event)">
+
+<div id="game" style="visibility:hidden">
+<form style="position:absolute;left:180;top:20">
+<input id="BallMsg" type="text" size="10" value="残り3個">
+<input id="PointMsg" type="text" size="10" value="0点">
+
+
+</form>
+<img src="wall2.png" style="position:absolute;left:46;top:46">
+<img id="ball" src="ball2.png" style="position:absolute;left=-10;top=0">
+<img id="bar" src="bar23.png" style="position:absolute;left:200;top:400">
+<div id="block"></div>
+</div>
+
+<div id="mode" style="visibility:hidden">
+<img id="title" src="GAME.png" style="position:absolute;left:40;top:40" onclick="START()">
+<img id="1p" src="1p.png" style="position:absolute;left:100;top:200" onclick="countdown()">
+<img id="vs" src="vs.png" style="position:absolute;left:100;top:300" onclick="startgame2()">
+<img id="Exc" src="exc.png" style="position:absolute;left:100;top:400" onclick="Excmode()">
+<img id="Close" src="close.png" style="position:absolute;left:100;top:200; visibility:hidden">
+
+<div id="count" style="position:absolute;left:220;top:200;font-size:100;visibility:hidden"></div>
+
+
+
+
+
+<p id="batUI" style="visibility:hidden">
+<img src="wall.png" style="position:absolute;left:46;top:46">
+<img id="ballb" src="ball.png" style="position:absolute;left=10;top=10;visibility:hidden">
+<img id="bar1" src="bar.png" style="position:absolute;left:200;top:400">
+<img id="bar2" src="bar2.png" style="position:absolute;left:200;top:75">
+
+<div id="block2"></div>
+
+<div id="batUI2" style="visibility:hidden">
+<input id="p1" style="position:absolute;left:460;top:50;width: 100px" type="text" value="0点">
+<input id="p2s" style="position:absolute;left:460;top:75;width: 100px" type="text" value="0hit">
+<input id="p2" type="text" style="position:absolute;left:460;top:430;width: 100px" value="0点">
+<input id="p1s" style="position:absolute;left:460;top:405;width: 100px" type="text" value="0hit">
+
+<label id="text" style="position:absolute;left:510;top:160">BLUE - 操作　- RED</label>
+<label id="text" style="position:absolute;left:520;top:180">"Z"　左移動　"1"</label>
+<label id="text" style="position:absolute;left:520;top:200">"C"　右移動　"3"</label>
+<label id="text" style="position:absolute;left:520;top:220">"X"　 加速　&nbsp;  "2"</label>
+
+<label id="text" style="position:absolute;left:480;top:260">3hit 消費効果</label>
+<label id="text" style="position:absolute;left:480;top:280">"A"　ラケット延長（5秒）　"4"</label>
+<label id="text" style="position:absolute;left:480;top:300">"S"　ブロック貫通（3秒）　"5"</label>
+<label id="text" style="position:absolute;left:480;top:320">"D"　相手の減速（4秒）　"6"</label>
+
+<label id="text" style="position:absolute;left:5;top:250;color:blue;">Start→○</label>
+<label id="text" style="position:absolute;left:430;top:200;color:red;">○←Start</label>
+</div>
+</p>
+
+<div id="result" style="position:absolute;left:90;top:200;font-size:80;">
+</div>
+<div id="countb" style="position:absolute;left:220;top:200;font-size:100;visibility:hidden">
+</div>
+
+
+
+
+
+</div>
+
+</body>
+</html>

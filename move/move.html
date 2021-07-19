@@ -1,0 +1,77 @@
+<html>
+<body>
+
+
+<script type="text/javascript">
+
+var colo=["#6699FF","#00FFFF","#4DFF4D","#ADFF5C","#FFFF33","#FF9966","#FF66CC","#ADADFF","#6B8FB2","#3385FF","#99CC00","#4DFF4D"];
+var suntop=300,sunleft=500;
+var earthtop=suntop+200,earthleft=sunleft;
+var moontop=earthtop+50,moonleft=earthleft;
+var tt1;
+
+	    var sun = document.createElement("DIV");
+	    var earth = document.createElement("DIV");
+	    var moon = document.createElement("DIV");
+	    var y3 = document.createElement("DT");
+	    var t1 = document.createTextNode("sun");
+	    var t2 = document.createTextNode("earth");
+	    var t3 = document.createTextNode("moon");
+	    var t4 = document.createTextNode("ttt");
+	    
+	    sun.appendChild(t1);
+	    earth.appendChild(t2);
+	    moon.appendChild(t3);
+	    
+	    sun.style.backgroundColor=colo[1]; 
+	    sun.style.position = "absolute";
+	    sun.style.left=sunleft;
+	    sun.style.top=suntop;
+	    
+	    earth.style.backgroundColor=colo[3]; 
+	   earth.style.position = "absolute";
+	    earth.style.left=earthleft;
+	    earth.style.top=earthtop;
+	    
+	     moon.style.backgroundColor=colo[3]; 
+	    moon.style.position = "absolute";
+	    moon.style.left=moonleft;
+	    moon.style.top=moontop;
+	 
+	    document.body.appendChild(sun);
+	    document.body.appendChild(earth);
+	    document.body.appendChild(moon);
+	    document.body.appendChild(document.createTextNode(earth.style.top));
+	   var angle1=0;
+	   var r1=50;
+	   var angle2=0;
+	   var r2=200;
+	   
+       function moonmove() {
+         angle1=angle1+5;
+           earthmove();
+         moonleft=earthleft+r1*Math.cos(angle1*(Math.PI/180));
+         moontop=earthtop+Math.round(r1*Math.sin(angle1*(Math.PI/180)));
+         moon.style.left=moonleft;
+	     moon.style.top=moontop;
+         if (angle1==360){
+          angle1=0;
+        
+         }
+       }
+       
+       
+       function earthmove() {
+         angle2++;
+         earthleft=sunleft+r2*Math.cos(angle2*(Math.PI/180)/360);
+         earthtop=suntop+Math.round(r2*Math.sin(angle2*(Math.PI/180)/360));
+         earth.style.left=earthleft;
+	     earth.style.top=earthtop;
+       }
+       
+       setInterval(function () {moonmove()}, 1);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<html>
+<head>
+<script type="text/javascript">
+    var x=200,y=100; // ボールの初期位置
+    var dx=10,dy=10; // ボールの移動距離
+    var rx=200;
+    var Point=0;
+    var BallN=3;
+    var TimeId;
+    var Level=100;
+    function speed(obj)
+    {
+        Level=obj.value;
+    }
+    function move()
+    {
+        TimeId=setTimeout("move()",Level);
+        var ball=document.getElementById("ball");
+        x+=dx;
+        y+=dy;
+        ball.style.left=x;
+        ball.style.top=y;
+        var bar=document.getElementById("bar");
+        rx=x-25;
+        bar.style.left=rx;
+
+        if (x<=50 || x+10>=450)
+            dx=-dx;
+        if (y<=50)
+            dy=-dy;
+        if (rx-10<=x && x<=rx+50 && y+10==400){
+            dy=-dy;
+            Point+=10;
+            var PointMsg=document.getElementById("PointMsg");
+            PointMsg.value=Point+"点";
+             Level=Level-5;
+            if(Level<=0){
+            Level=1;}
+        }
+        if (y>420) {
+            BallN--;
+            var BallMsg=document.getElementById("BallMsg"); 
+            BallMsg.value="残り"+BallN+"個";           
+            ball.style.visibility="hidden";
+            clearTimeout(TimeId);
+            setTimeout("init()",2000);
+        }
+        if (BallN==0){
+            ball.style.visibility="hidden";
+            clearTimeout(TimeId);
+        }
+    }
+    function racket(event)
+    {
+        var bar=document.getElementById("bar");
+        rx=event.clientX-25;
+        if (50<=rx && rx+50<=450)
+            bar.style.left=rx;
+           
+    }
+    function init()
+    {
+        var ball=document.getElementById("ball");
+        x=parseInt((Math.random()*300)/10)*10+60;
+        y=parseInt((Math.random()*30)/10)*10+60;
+        ball.style.left=x;
+        ball.style.top=y;
+        ball.style.visibility="visible";
+        move();
+    }
+</script>
+</head>
+<body >
+<form style="position:absolute;left:160;top:20">
+<input id="BallMsg" type="text" size="10" value="残り3個">
+<input id="PointMsg" type="text" size="10" value="0点">
+<select onChange="speed(this)">
+<option value="100">初級
+<option value="50">中級
+<option value="25">上級
+</select>
+</form>
+<img src="wall.png" style="position:absolute;left:46;top:46">
+<img id="ball" src="ball.png" style="position:absolute;visibility:hidden">
+<img id="bar" src="bar.png" style="position:absolute;left:200;top:400" onClick="init()">
+</body>
+</html>
