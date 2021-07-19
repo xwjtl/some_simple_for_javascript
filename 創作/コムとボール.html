@@ -1,0 +1,151 @@
+﻿<html>
+
+<head>
+<meta content="ja" http-equiv="Content-Language">
+<script type="text/javascript">
+var ww=window.innerWidth ;
+var hh=window.innerHeight ;
+
+var	mx = 0;
+var	my = 0;
+var vx=0;
+var vy=0;
+
+
+var boll = document.createElement("CANVAS");
+var ido = document.createElement("CANVAS");
+ido.style.position = "absolute";
+ido.width=ww;
+ido.height=hh;
+ido.style.left=0;
+ido.style.top=0;
+var idotx = ido.getContext("2d");
+
+
+//ido.style.position = "absolute";
+
+var bolltop=0;
+var bollleft=0;
+
+
+function start(){
+  bollimg();
+  document.body.appendChild(ido);
+
+  var startb = document.getElementById("startb");
+  startb.style.visibility ="hidden";
+  move();
+  var ttt=58;
+}
+
+function move(){
+
+  var bollg=3000.0;
+  var k=10.0;
+  var l=200.0;
+  var g=9.8;
+  
+  var fx=0;
+  var fy=0;
+  var dr=Math.sqrt((mx-bollleft)*(mx-bollleft)+(my-bolltop)*(my-bolltop));
+  var f=0;
+  
+  if (dr>l){
+    f=(dr-l)*k;
+    fx=f*(mx-bollleft)/dr;
+    fy=f*(my-bolltop)/dr;
+
+  }
+  document.getElementById("bollgi").value=dr;
+
+  var bollfx=fx;
+  var bollfy=fy-(bollg/1000)*g;
+  
+  var bolldx=bollfx/(bollg/1000);
+  var bolldy=bollfy/(bollg/1000);
+  
+  vx=vx+bolldx/100-vx/80;
+  vy=vy+bolldy/100-vy/80;
+  
+  bolltop=bolltop+vy;
+  bollleft=bollleft+vx;
+  idoimg(mx,my,bollleft,bolltop);
+
+  bollx(bollleft);
+  bolly(bolltop);
+  //document.write(bolltop);
+  setTimeout("move()", 10 );
+
+}
+
+
+function bollx(x){
+x=parseInt(x);
+boll.style.left=x-50;
+}
+function bolly(y){
+y=parseInt(y);
+boll.style.top=hh-(y+50);
+}
+
+function bollimg() {
+	boll.style.position = "absolute";
+	bolltop=hh/2;
+	bollleft=ww/2;
+
+	bollx(bollleft);
+	bolly(bolltop);
+	var bolltx = boll.getContext("2d");
+	bolltx.beginPath();
+	bolltx.lineWidth = 10;
+	bolltx.lineJoin = "round";
+	bolltx.moveTo(95, 50);
+
+	for (var angle=0.1;angle<=6.5;angle=angle+0.05){
+
+	   var x=50+45*Math.cos(angle);
+       var y=50+45*Math.sin(angle);
+		bolltx.lineTo(x, y);
+	}
+		bolltx.stroke();
+		document.body.appendChild(boll);
+}
+
+function idoimg(mox,moy,bx,by) {
+	idotx.clearRect(0,0,ido.width,ido.height)
+	moy=hh-moy;
+	by=hh-by;
+	idotx.beginPath();
+	idotx.lineWidth = 3;
+	idotx.moveTo(mox, moy);
+	idotx.lineTo(bx, by);
+	idotx.closePath();	
+	idotx.stroke();
+
+}
+function mouse(event) {
+
+ 	mx = event.clientX;
+  	my = hh-event.clientY;
+}
+</script>
+</head>
+
+<body onmousemove="mouse(event)">
+<label id="Label1"></label>
+<p>重さ<input id="bollgi" name="bollg" type="text" value="1000"></p>
+<p>K<input name="k" type="text" value="20"></p>
+<p>長さ<input name="l" type="text" value="100"><form method="post">
+	</form>
+	<input id="startb" name="bs" type="button" value="START" onclick="start()" ></p>
+<label id="Label2"></label>
+<script type="text/javascript">
+var startb = document.getElementById("startb");
+
+	startb.style.position = "absolute";
+	startb.style.left=ww/2;
+	startb.style.top=hh/2;
+</script>
+</body>
+
+</html>

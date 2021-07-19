@@ -1,0 +1,99 @@
+﻿<html>
+
+<head>
+<meta content="ja" http-equiv="Content-Language">
+<script type="text/javascript">
+var ww=window.innerWidth ;
+var hh=window.innerHeight ;
+
+var	mx = 0;
+var	my = 0;
+var vx=0;
+var vy=0;
+
+
+var boll = document.createElement("CANVAS");
+var bolltop=0;
+var bollleft=0;
+
+
+function start(){
+  bollimg();
+ 
+  var startb = document.getElementById("startb");
+  startb.style.visibility ="hidden";
+  }
+
+
+function bollx(x){
+x=parseInt(x);
+boll.style.left=x-50;
+}
+function bolly(y){
+y=parseInt(y);
+boll.style.top=y-50;
+}
+
+function bollimg() {
+	boll.style.position = "absolute";
+	bolltop=hh/2;
+	bollleft=ww/2;
+    boll.width=100;
+    boll.height=100;
+	bollx(bollleft);
+	bolly(bolltop);
+	var bolltx = boll.getContext("2d");
+	bolltx.beginPath();
+	bolltx.lineWidth = 10;
+	bolltx.lineJoin = "round";
+	bolltx.moveTo(95, 50);
+
+	for (var angle=0.1;angle<=6.5;angle=angle+0.05){
+
+	   var x=50+45*Math.cos(angle);
+       var y=50+45*Math.sin(angle);
+		bolltx.lineTo(x, y);
+	}
+		bolltx.stroke();
+		document.body.appendChild(boll);
+}
+
+function move(event) {
+    mx = (event.clientX-bollleft);
+  	my = (event.clientY-bolltop);
+  	
+
+  	var r=Math.sqrt (mx*mx+my*my);//距離計算
+  	
+  	if (r>40){//円の外に移動した
+  		var dr=r-40;//移動距離計算
+        var dy=(dr*my)/r;//Y方向移動距離計算
+  		var dx=(dr*mx)/r;//X方向移動距離計算
+  	  　bolltop=bolltop+(dy);//円の位置計算；
+  	  　bollleft=bollleft+(dx);
+  	}
+ 	bollx(bollleft);
+	bolly(bolltop);
+
+
+}
+
+//boll.addEventListener("mousemove", move);
+
+</script>
+</head>
+
+<body  onmousemove="move(event);">
+<label id="Label1"></label>
+	<input id="startb" name="bs" type="button" value="START" onclick="start()" ><label id="Label3">lb</label></p>
+<label id="Label2"></label>
+<script type="text/javascript">
+var startb = document.getElementById("startb");
+
+	startb.style.position = "absolute";
+	startb.style.left=ww/2;
+	startb.style.top=hh/2;
+</script>
+</body>
+
+</html>
